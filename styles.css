@@ -125,8 +125,18 @@ main {
   padding: 84px max(24px, calc((100vw - 1180px) / 2)) 70px;
   isolation: isolate;
   overflow: hidden;
-  background: url("assets/bk.jpg") center right / cover no-repeat;
+  background: var(--paper);
   text-align: center;
+}
+
+.hero-video {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center right;
 }
 
 .hero-shade,
@@ -138,14 +148,14 @@ main {
 }
 
 .hero-shade {
-  z-index: 0;
+  z-index: 1;
   background:
     radial-gradient(circle at center, rgba(255, 249, 242, 0.58) 0%, rgba(255, 249, 242, 0.4) 36%, rgba(255, 249, 242, 0.2) 72%),
     linear-gradient(0deg, rgba(255, 249, 242, 0.96) 0%, rgba(255, 249, 242, 0) 34%);
 }
 
 .hero-thread {
-  z-index: 1;
+  z-index: 2;
   pointer-events: none;
   opacity: 0.16;
   background: repeating-linear-gradient(90deg, rgba(32, 24, 29, 0.08) 0 1px, transparent 1px 92px);
@@ -153,7 +163,7 @@ main {
 
 .hero-content {
   position: relative;
-  z-index: 2;
+  z-index: 3;
   width: min(690px, 100%);
   display: grid;
   justify-items: center;
@@ -297,7 +307,8 @@ h1 {
 
 .pieces,
 .about,
-.contact-order {
+.contact-order,
+.site-footer {
   position: relative;
   z-index: 1;
   padding: 90px max(24px, calc((100vw - 1180px) / 2));
@@ -420,12 +431,15 @@ h1 {
   pointer-events: none;
 }
 
-.gallery-frame img {
+.gallery-swatch {
   width: 100%;
   height: 100%;
   display: block;
-  object-fit: cover;
-  filter: none;
+  background:
+    radial-gradient(circle at 24% 22%, rgba(243, 166, 178, 0.72) 0 14%, transparent 15%),
+    radial-gradient(circle at 72% 28%, rgba(243, 180, 63, 0.64) 0 11%, transparent 12%),
+    radial-gradient(circle at 42% 64%, rgba(47, 116, 84, 0.48) 0 13%, transparent 14%),
+    linear-gradient(135deg, rgba(255, 253, 249, 0.96), rgba(247, 234, 219, 0.88));
   transition: transform 500ms ease, filter 500ms ease;
 }
 
@@ -710,11 +724,166 @@ textarea:focus {
   z-index: 1;
 }
 
+.site-footer {
+  display: grid;
+  justify-items: center;
+  gap: 28px;
+  overflow: hidden;
+  padding-top: 72px;
+  padding-bottom: 76px;
+  background: linear-gradient(135deg, rgba(255, 248, 240, 0.98), rgba(255, 253, 249, 0.96));
+  text-align: center;
+}
+
+.site-footer h2 {
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(2.6rem, 6vw, 5.6rem);
+  line-height: 0.9;
+}
+
+.social-links {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(16px, 4vw, 34px);
+}
+
+.social-links li {
+  list-style: none;
+}
+
+.social-button {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #404040;
+  font-size: 2rem;
+  font-weight: 900;
+  letter-spacing: 0;
+  transition: color 500ms ease, transform 180ms ease;
+}
+
+.social-button i {
+  font-size: 2.45rem;
+  line-height: 1;
+}
+
+.social-button:hover {
+  transform: translateY(-2px);
+}
+
+.social-button span {
+  position: absolute;
+  transition: transform 500ms ease, background 500ms ease;
+}
+
+.social-button span:nth-child(1),
+.social-button span:nth-child(3) {
+  width: 100%;
+  height: 3px;
+  background: #404040;
+}
+
+.social-button span:nth-child(1) {
+  top: 0;
+  left: 0;
+  transform-origin: right;
+}
+
+.social-button:hover span:nth-child(1) {
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.social-button span:nth-child(3) {
+  bottom: 0;
+  left: 0;
+  transform-origin: left;
+}
+
+.social-button:hover span:nth-child(3) {
+  transform: scaleX(0);
+  transform-origin: right;
+}
+
+.social-button span:nth-child(2),
+.social-button span:nth-child(4) {
+  width: 3px;
+  height: 100%;
+  background: #404040;
+}
+
+.social-button span:nth-child(2) {
+  top: 0;
+  left: 0;
+  transform: scale(0);
+  transform-origin: bottom;
+}
+
+.social-button:hover span:nth-child(2) {
+  transform: scale(1);
+  transform-origin: top;
+}
+
+.social-button span:nth-child(4) {
+  top: 0;
+  right: 0;
+  transform: scale(0);
+  transform-origin: top;
+}
+
+.social-button:hover span:nth-child(4) {
+  transform: scale(1);
+  transform-origin: bottom;
+}
+
+.instagram:hover {
+  color: #c32aa3;
+}
+
+.instagram:hover span {
+  background: #c32aa3;
+}
+
+.facebook:hover {
+  color: #3b5998;
+}
+
+.facebook:hover span {
+  background: #3b5998;
+}
+
+.whatsapp:hover {
+  color: #25d366;
+}
+
+.whatsapp:hover span {
+  background: #25d366;
+}
+
+.tiktok:hover {
+  color: #111;
+}
+
+.tiktok:hover span {
+  background: #111;
+}
+
 @media (max-width: 900px) {
   .hero {
     min-height: 90svh;
     padding-top: 74px;
     align-items: center;
+  }
+
+  .hero-video {
+    object-position: center;
   }
 
   .crochet-threads {
@@ -788,8 +957,23 @@ textarea:focus {
 
   .pieces,
   .about,
-  .contact-order {
+  .contact-order,
+  .site-footer {
     padding: 66px 18px;
+  }
+
+  .social-links {
+    gap: 14px;
+  }
+
+  .social-button {
+    width: 72px;
+    height: 72px;
+    font-size: 1.35rem;
+  }
+
+  .social-button i {
+    font-size: 1.75rem;
   }
 
   .order-bloom {

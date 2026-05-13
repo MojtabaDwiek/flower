@@ -1,6 +1,7 @@
 const form = document.querySelector(".order-form");
 const hero = document.querySelector(".hero");
 const crochetThreadField = document.querySelector(".crochet-threads");
+const footer = document.querySelector(".site-footer");
 const galleryStage = document.querySelector(".gallery-stage");
 const galleryTrack = document.querySelector(".gallery-track");
 const galleryState = {
@@ -26,8 +27,10 @@ function measureThreadField() {
   }
 
   const heroHeight = hero.offsetHeight || window.innerHeight;
-  crochetThreadField.style.top = `${heroHeight - 2}px`;
-  crochetThreadField.style.height = `${Math.max(window.innerHeight, document.documentElement.scrollHeight - heroHeight)}px`;
+  const threadTop = heroHeight - 2;
+  const threadEnd = footer?.offsetTop ?? document.documentElement.scrollHeight;
+  crochetThreadField.style.top = `${threadTop}px`;
+  crochetThreadField.style.height = `${Math.max(0, threadEnd - threadTop)}px`;
 }
 
 function setThreadTarget() {
@@ -36,8 +39,9 @@ function setThreadTarget() {
   }
 
   const heroHeight = hero.offsetHeight || window.innerHeight;
-  const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+  const threadEnd = footer?.offsetTop ?? document.documentElement.scrollHeight;
   const start = heroHeight * 0.42;
+  const maxScroll = Math.max(1, threadEnd - window.innerHeight);
   const distance = Math.max(window.innerHeight, maxScroll - start);
   threadState.target = clamp((window.scrollY - start) / distance);
 }

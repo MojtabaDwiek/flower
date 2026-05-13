@@ -14,12 +14,19 @@
       href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Nunito:wght@400;500;600;700;800;900&display=swap"
       rel="stylesheet"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <div class="site-shell">
       <main id="top">
         <section class="hero" aria-labelledby="hero-title">
+          <video class="hero-video" autoplay muted loop playsinline aria-hidden="true">
+            <source src="assets/Video 4.mp4" type="video/mp4" />
+          </video>
           <div class="hero-shade" aria-hidden="true"></div>
           <div class="hero-thread" aria-hidden="true"></div>
 
@@ -63,50 +70,50 @@
           </div>
           <div class="gallery-stage" aria-label="Crochet work gallery">
             <div class="gallery-track">
-              <figure class="gallery-frame">
-                <img src="assets/bk.jpg" alt="Crochet flowers arranged as a handmade bouquet" />
+              <figure class="gallery-frame" aria-label="Crochet flowers arranged as a handmade bouquet">
+                <span class="gallery-swatch" aria-hidden="true"></span>
               </figure>
-              <figure class="gallery-frame">
-                <img src="assets/bk.jpg" alt="Close detail of crochet flowers and yarn texture" />
+              <figure class="gallery-frame" aria-label="Close detail of crochet flowers and yarn texture">
+                <span class="gallery-swatch" aria-hidden="true"></span>
               </figure>
-              <figure class="gallery-frame">
-                <img src="assets/bk.jpg" alt="Handmade crochet gift detail" />
+              <figure class="gallery-frame" aria-label="Handmade crochet gift detail">
+                <span class="gallery-swatch" aria-hidden="true"></span>
               </figure>
-              <figure class="gallery-frame">
-                <img src="assets/bk.jpg" alt="Crochet floral keepsake detail" />
+              <figure class="gallery-frame" aria-label="Crochet floral keepsake detail">
+                <span class="gallery-swatch" aria-hidden="true"></span>
               </figure>
-              <figure class="gallery-frame">
-                <img src="assets/bk.jpg" alt="Crochet bouquet and soft handmade details" />
-              </figure>
-              <figure class="gallery-frame" aria-hidden="true">
-                <img src="assets/bk.jpg" alt="" />
+              <figure class="gallery-frame" aria-label="Crochet bouquet and soft handmade details">
+                <span class="gallery-swatch" aria-hidden="true"></span>
               </figure>
               <figure class="gallery-frame" aria-hidden="true">
-                <img src="assets/bk.jpg" alt="" />
+                <span class="gallery-swatch"></span>
               </figure>
               <figure class="gallery-frame" aria-hidden="true">
-                <img src="assets/bk.jpg" alt="" />
+                <span class="gallery-swatch"></span>
               </figure>
               <figure class="gallery-frame" aria-hidden="true">
-                <img src="assets/bk.jpg" alt="" />
+                <span class="gallery-swatch"></span>
               </figure>
               <figure class="gallery-frame" aria-hidden="true">
-                <img src="assets/bk.jpg" alt="" />
+                <span class="gallery-swatch"></span>
+              </figure>
+              <figure class="gallery-frame" aria-hidden="true">
+                <span class="gallery-swatch"></span>
               </figure>
             </div>
           </div>
           <div class="gallery-fallback" aria-hidden="true">
             <figure class="gallery-frame">
-              <img src="assets/bk.jpg" alt="Crochet flowers arranged as a handmade bouquet" />
+              <span class="gallery-swatch"></span>
             </figure>
             <figure class="gallery-frame">
-              <img src="assets/bk.jpg" alt="Close detail of crochet flowers and yarn texture" />
+              <span class="gallery-swatch"></span>
             </figure>
             <figure class="gallery-frame">
-              <img src="assets/bk.jpg" alt="Handmade crochet gift detail" />
+              <span class="gallery-swatch"></span>
             </figure>
             <figure class="gallery-frame">
-              <img src="assets/bk.jpg" alt="Crochet floral keepsake detail" />
+              <span class="gallery-swatch"></span>
             </figure>
           </div>
         </section>
@@ -166,15 +173,7 @@
               <span>Name</span>
               <input type="text" name="name" autocomplete="name" placeholder="Your name" required />
             </label>
-            <label>
-              <span>Piece</span>
-              <select name="piece">
-                <option>Forever bouquet</option>
-                <option>Bloom charm</option>
-                <option>Nursery softie</option>
-                <option>Custom idea</option>
-              </select>
-            </label>
+            
             <label>
               <span>Color note</span>
               <textarea name="note" rows="4" placeholder="Soft pinks, fresh greens, sunny yellow..."></textarea>
@@ -182,6 +181,50 @@
             <button class="button primary" type="submit">Request quote</button>
           </form>
         </section>
+
+        <footer class="site-footer" aria-labelledby="footer-title">
+          <h2 id="footer-title">Flowers and More</h2>
+          <nav aria-label="Social media">
+            <ul class="social-links">
+              <li>
+                <a class="social-button instagram" href="#" aria-label="Instagram">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                  <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+                </a>
+              </li>
+              <li>
+                <a class="social-button facebook" href="#" aria-label="Facebook">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                  <i class="fa-brands fa-facebook-f" aria-hidden="true"></i>
+                </a>
+              </li>
+              <li>
+                <a class="social-button whatsapp" href="#" aria-label="WhatsApp">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                  <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+                </a>
+              </li>
+              <li>
+                <a class="social-button tiktok" href="#" aria-label="TikTok">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                  <i class="fa-brands fa-tiktok" aria-hidden="true"></i>
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </footer>
 
       </main>
     </div>
