@@ -10,28 +10,36 @@
     <title>Flowers and More | Handmade Crochet Gifts</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Nunito:wght@400;500;600;700;800;900&display=swap"
       rel="stylesheet"
     />
     <link
-      rel="stylesheet"
+      rel="preload"
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet'"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      />
+    </noscript>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <div class="site-shell">
       <main id="top">
         <section class="hero" aria-labelledby="hero-title">
-          <video class="hero-video" autoplay muted loop playsinline aria-hidden="true">
+          <video class="hero-video" autoplay muted loop playsinline preload="metadata" aria-hidden="true">
             <source src="assets/Video 4.mp4" type="video/mp4" />
           </video>
           <div class="hero-shade" aria-hidden="true"></div>
           <div class="hero-thread" aria-hidden="true"></div>
 
           <div class="hero-content">
-            
             <h1 id="hero-title">Flowers and More</h1>
             <p class="hero-copy">
               Forever bouquets, soft keepsakes, and tiny floral charms shaped
@@ -42,8 +50,6 @@
               <a class="button secondary" href="#order">Create custom order</a>
             </div>
           </div>
-
-          
         </section>
 
         <div class="crochet-threads" aria-hidden="true">
@@ -166,20 +172,18 @@
                 <span>Gift wrapping</span>
                 <span>Local pickup</span>
               </div>
+              <a
+                class="button order-whatsapp"
+                href="https://wa.me/96100000000?text=Hi%20Flowers%20and%20More%2C%20I%20would%20like%20to%20place%20a%20custom%20order."
+                target="_blank"
+                rel="noopener"
+                aria-label="Order now on WhatsApp"
+              >
+                <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+                <span>Order now</span>
+              </a>
             </div>
           </div>
-          <form class="order-form">
-            <label>
-              <span>Name</span>
-              <input type="text" name="name" autocomplete="name" placeholder="Your name" required />
-            </label>
-            
-            <label>
-              <span>Color note</span>
-              <textarea name="note" rows="4" placeholder="Soft pinks, fresh greens, sunny yellow..."></textarea>
-            </label>
-            <button class="button primary" type="submit">Request quote</button>
-          </form>
         </section>
 
         <footer class="site-footer" aria-labelledby="footer-title">
@@ -205,7 +209,13 @@
                 </a>
               </li>
               <li>
-                <a class="social-button whatsapp" href="#" aria-label="WhatsApp">
+                <a
+                  class="social-button whatsapp"
+                  href="https://wa.me/96100000000?text=Hi%20Flowers%20and%20More%2C%20I%20would%20like%20to%20place%20a%20custom%20order."
+                  target="_blank"
+                  rel="noopener"
+                  aria-label="WhatsApp"
+                >
                   <span></span>
                   <span></span>
                   <span></span>
@@ -225,7 +235,6 @@
             </ul>
           </nav>
         </footer>
-
       </main>
     </div>
 

@@ -36,10 +36,7 @@ a {
   text-decoration: none;
 }
 
-button,
-input,
-select,
-textarea {
+button {
   font: inherit;
 }
 
@@ -180,10 +177,7 @@ main {
   backdrop-filter: blur(10px) saturate(1.08);
 }
 
-.eyebrow,
-.card-kicker,
-.hero-panel span,
-label span {
+.eyebrow {
   margin: 0 0 14px;
   color: var(--rose);
   font-size: 0.76rem;
@@ -199,28 +193,13 @@ p {
   overflow-wrap: anywhere;
 }
 
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
 h1,
 h2 {
   font-family: "Fraunces", Georgia, serif;
 }
 
 h3,
-.button,
-input,
-select,
-textarea {
+.button {
   font-family: "Nunito", system-ui, sans-serif;
 }
 
@@ -279,32 +258,6 @@ h1 {
   color: var(--ink);
 }
 
-.hero-panel {
-  position: absolute;
-  z-index: 2;
-  left: 50%;
-  bottom: 34px;
-  transform: translateX(-50%);
-  width: min(320px, calc(100% - 48px));
-  padding: 16px 18px;
-  border: 1px solid rgba(32, 24, 29, 0.11);
-  border-radius: 8px;
-  background: rgba(255, 253, 249, 0.78);
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(18px) saturate(1.12);
-  text-align: center;
-}
-
-.hero-panel span {
-  display: block;
-  margin-bottom: 8px;
-}
-
-.hero-panel strong {
-  display: block;
-  line-height: 1.4;
-}
-
 .pieces,
 .about,
 .contact-order,
@@ -314,15 +267,13 @@ h1 {
   padding: 90px max(24px, calc((100vw - 1180px) / 2));
 }
 
-.section-heading {
-  display: grid;
-  grid-template-columns: 0.4fr minmax(0, 1fr);
-  gap: 30px;
-  align-items: end;
-  margin-bottom: 28px;
+.pieces,
+.about,
+.contact-order {
+  content-visibility: auto;
+  contain-intrinsic-size: 700px;
 }
 
-.section-heading h2,
 .about h2,
 .contact-order h2 {
   max-width: 760px;
@@ -602,23 +553,25 @@ h1 {
 
 .contact-order {
   display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(320px, 520px);
-  gap: 48px;
-  align-items: center;
+  place-items: center;
+  min-height: 560px;
   background: transparent;
+  text-align: center;
 }
 
 .order-copy {
   display: grid;
   place-items: center;
+  width: min(100%, 900px);
 }
 
 .order-bloom {
   position: relative;
   display: grid;
   justify-items: center;
-  width: min(100%, 620px);
-  padding: 34px;
+  width: min(100%, 760px);
+  padding: clamp(34px, 6vw, 62px);
+  overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: 8px;
   background:
@@ -629,6 +582,30 @@ h1 {
   isolation: isolate;
 }
 
+.order-bloom::before,
+.order-bloom::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+
+.order-bloom::before {
+  inset: 18px;
+  border: 1px dashed rgba(217, 79, 101, 0.28);
+  border-radius: 8px;
+}
+
+.order-bloom::after {
+  width: 180px;
+  height: 180px;
+  right: -54px;
+  bottom: -66px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.78) 0 37%, transparent 38%),
+    repeating-radial-gradient(circle at 50% 50%, rgba(47, 116, 84, 0.13) 0 2px, transparent 2px 13px);
+}
+
 .order-bloom > * {
   position: relative;
   z-index: 1;
@@ -637,11 +614,13 @@ h1 {
 .order-copy p {
   max-width: 520px;
   margin-top: 20px;
+  font-size: 1.05rem;
 }
 
 .contact-list {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 10px;
   margin-top: 24px;
 }
@@ -656,72 +635,22 @@ h1 {
   font-weight: 900;
 }
 
-.order-form {
-  position: relative;
-  display: grid;
-  gap: 16px;
-  padding: 30px;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 38% 62% 42% 58% / 14% 16% 84% 86%;
-  background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.01));
-  box-shadow: none;
-  backdrop-filter: blur(10px) saturate(1.08);
+.order-whatsapp {
+  gap: 10px;
+  margin-top: 32px;
+  border-color: transparent;
+  background: #25d366;
+  color: #083d21;
+  box-shadow: 0 18px 36px rgba(37, 211, 102, 0.24);
 }
 
-.order-form::before {
-  content: "";
-  position: absolute;
-  inset: 12px;
-  border: 1px solid rgba(32, 24, 29, 0.08);
-  border-radius: inherit;
-  pointer-events: none;
+.order-whatsapp i {
+  font-size: 1.24rem;
 }
 
-label {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  gap: 8px;
-}
-
-label span {
-  margin: 0;
-}
-
-input,
-select,
-textarea {
-  width: 100%;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.92);
-  color: var(--ink);
-  outline: none;
-}
-
-input,
-select {
-  min-height: 52px;
-  padding: 0 14px;
-}
-
-textarea {
-  resize: vertical;
-  padding: 14px;
-}
-
-input:focus,
-select:focus,
-textarea:focus {
-  border-color: var(--rose);
-  box-shadow: 0 0 0 4px rgba(217, 79, 101, 0.13);
-}
-
-.order-form .button {
-  position: relative;
-  z-index: 1;
+.order-whatsapp:hover {
+  background: #1fc45c;
+  box-shadow: 0 20px 42px rgba(37, 211, 102, 0.3);
 }
 
 .site-footer {
@@ -908,13 +837,6 @@ textarea:focus {
     font-size: clamp(4rem, 20vw, 7.2rem);
   }
 
-  .hero-panel {
-    left: 50%;
-    bottom: 28px;
-    width: auto;
-  }
-
-  .section-heading,
   .about,
   .contact-order,
   .about-points {
@@ -951,10 +873,6 @@ textarea:focus {
     width: 100%;
   }
 
-  .hero-panel {
-    width: calc(100% - 36px);
-  }
-
   .pieces,
   .about,
   .contact-order,
@@ -981,11 +899,6 @@ textarea:focus {
     padding: 44px 24px;
   }
 
-  .order-form {
-    padding: 22px;
-    border-radius: 8px;
-  }
-
   .gallery-stage {
     --gallery-card: min(68vw, 260px);
     --gallery-gap: 14px;
@@ -1010,6 +923,13 @@ textarea:focus {
   }
 
   .button {
+    transition: none;
+  }
+
+  .gallery-frame,
+  .gallery-swatch,
+  .social-button,
+  .social-button span {
     transition: none;
   }
 

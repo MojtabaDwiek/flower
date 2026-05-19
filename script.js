@@ -1,9 +1,20 @@
-const form = document.querySelector(".order-form");
 const hero = document.querySelector(".hero");
 const crochetThreadField = document.querySelector(".crochet-threads");
 const footer = document.querySelector(".site-footer");
 const galleryStage = document.querySelector(".gallery-stage");
 const galleryTrack = document.querySelector(".gallery-track");
+const galleryCards = galleryTrack ? Array.from(galleryTrack.children) : [];
+const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+let layoutFrame = null;
+
+const clamp = (value, min = 0, max = 1) => Math.min(max, Math.max(min, value));
+
+const threadState = {
+  target: 0,
+  current: 0,
+  frame: null,
+};
+
 const galleryState = {
   dragging: false,
   startX: 0,
@@ -11,13 +22,6 @@ const galleryState = {
   currentX: 0,
   velocity: 0,
   loopDistance: 0,
-  frame: null,
-};
-
-const clamp = (value, min = 0, max = 1) => Math.min(max, Math.max(min, value));
-const threadState = {
-  target: 0,
-  current: 0,
   frame: null,
 };
 
@@ -61,36 +65,31 @@ function renderCrochetThreads() {
   }
 }
 
-function requestStringUpdate() {
+function requestThreadUpdate() {
   setThreadTarget();
 
-  if (threadState.frame) {
-    return;
+  if (!threadState.frame) {
+    threadState.frame = window.requestAnimationFrame(renderCrochetThreads);
   }
-
-  threadState.frame = window.requestAnimationFrame(renderCrochetThreads);
 }
 
 function updateGalleryDepth() {
-  if (!galleryStage || !galleryTrack) {
+  if (!galleryStage || !galleryCards.length) {
     return;
   }
 
   const stageRect = galleryStage.getBoundingClientRect();
   const center = stageRect.left + stageRect.width / 2;
 
-  [...galleryTrack.children].forEach((card) => {
+  galleryCards.forEach((card) => {
     const rect = card.getBoundingClientRect();
     const cardCenter = rect.left + rect.width / 2;
     const distance = (cardCenter - center) / stageRect.width;
-    const clamped = Math.max(-1, Math.min(1, distance));
-    const rotate = clamped * -34;
-    const depth = (1 - Math.abs(clamped)) * 130 - 120;
-    const lift = (1 - Math.abs(clamped)) * -18;
-    const scale = 0.86 + (1 - Math.abs(clamped)) * 0.2;
+    const clamped = clamp(distance, -1, 1);
+    const depthRatio = 1 - Math.abs(clamped);
 
-    card.style.transform = `rotateY(${rotate}deg) rotateX(${Math.abs(clamped) * 5}deg) translateY(${lift}px) translateZ(${depth}px) scale(${scale})`;
-    card.style.zIndex = `${Math.round((1 - Math.abs(clamped)) * 10)}`;
+    card.style.transform = `rotateY(${clamped * -34}deg) rotateX(${Math.abs(clamped) * 5}deg) translateY(${depthRatio * -18}px) translateZ(${depthRatio * 130 - 120}px) scale(${0.86 + depthRatio * 0.2})`;
+    card.style.zIndex = `${Math.round(depthRatio * 10)}`;
   });
 }
 
@@ -99,8 +98,7 @@ function wrapGalleryPosition(value) {
     return value;
   }
 
-  const min = -galleryState.loopDistance;
-  if (value <= min) {
+  if (value <= -galleryState.loopDistance) {
     return value + galleryState.loopDistance;
   }
 
@@ -122,18 +120,20 @@ function renderGallery() {
 }
 
 function setGalleryLoopDistance() {
-  if (!galleryStage || !galleryTrack || galleryTrack.children.length < 6) {
+  if (!galleryTrack || galleryCards.length < 6) {
     return;
   }
 
-  const firstCard = galleryTrack.children[0];
-  const sixthCard = galleryTrack.children[5];
-  galleryState.loopDistance = sixthCard.offsetLeft - firstCard.offsetLeft;
+  galleryState.loopDistance = galleryCards[5].offsetLeft - galleryCards[0].offsetLeft;
   renderGallery();
 }
 
 function startMomentum() {
   window.cancelAnimationFrame(galleryState.frame);
+
+  if (prefersReducedMotion) {
+    return;
+  }
 
   const step = () => {
     if (galleryState.dragging) {
@@ -152,72 +152,70 @@ function startMomentum() {
   galleryState.frame = window.requestAnimationFrame(step);
 }
 
-galleryStage?.addEventListener("pointerdown", (event) => {
-  galleryState.dragging = true;
-  galleryState.startX = event.clientX;
-  galleryState.previousX = event.clientX;
-  galleryState.velocity = 0;
-  galleryStage.classList.add("is-dragging");
-  galleryStage.setPointerCapture(event.pointerId);
-  window.cancelAnimationFrame(galleryState.frame);
-});
-
-galleryStage?.addEventListener("pointermove", (event) => {
-  if (!galleryState.dragging) {
-    return;
-  }
-
-  const delta = event.clientX - galleryState.previousX;
-  galleryState.currentX += delta;
-  galleryState.velocity = delta;
-  galleryState.previousX = event.clientX;
-  renderGallery();
-});
-
 function endGalleryDrag(event) {
   if (!galleryState.dragging) {
     return;
   }
 
   galleryState.dragging = false;
-  galleryStage?.classList.remove("is-dragging");
+  galleryStage.classList.remove("is-dragging");
 
-  if (event?.pointerId !== undefined && galleryStage?.hasPointerCapture(event.pointerId)) {
+  if (event?.pointerId !== undefined && galleryStage.hasPointerCapture(event.pointerId)) {
     galleryStage.releasePointerCapture(event.pointerId);
   }
 
   startMomentum();
 }
 
-galleryStage?.addEventListener("pointerup", endGalleryDrag);
-galleryStage?.addEventListener("pointercancel", endGalleryDrag);
-galleryStage?.addEventListener("pointerleave", endGalleryDrag);
+function scheduleLayoutUpdate() {
+  if (layoutFrame) {
+    return;
+  }
 
-window.addEventListener("load", setGalleryLoopDistance);
-window.addEventListener("load", () => {
-  measureThreadField();
-  requestStringUpdate();
-});
-window.addEventListener("resize", () => {
-  setGalleryLoopDistance();
-  measureThreadField();
-  requestStringUpdate();
-});
-window.addEventListener("scroll", requestStringUpdate, { passive: true });
-setGalleryLoopDistance();
-measureThreadField();
-requestStringUpdate();
+  layoutFrame = window.requestAnimationFrame(() => {
+    layoutFrame = null;
+    setGalleryLoopDistance();
+    measureThreadField();
 
-form?.addEventListener("submit", (event) => {
-  event.preventDefault();
-  const button = form.querySelector("button");
-  const original = button.textContent;
-  button.textContent = "Quote request noted";
-  button.disabled = true;
+    if (!prefersReducedMotion) {
+      requestThreadUpdate();
+    }
+  });
+}
 
-  window.setTimeout(() => {
-    button.textContent = original;
-    button.disabled = false;
-    form.reset();
-  }, 1700);
-});
+if (galleryStage && galleryTrack) {
+  galleryStage.addEventListener("pointerdown", (event) => {
+    galleryState.dragging = true;
+    galleryState.startX = event.clientX;
+    galleryState.previousX = event.clientX;
+    galleryState.velocity = 0;
+    galleryStage.classList.add("is-dragging");
+    galleryStage.setPointerCapture(event.pointerId);
+    window.cancelAnimationFrame(galleryState.frame);
+  });
+
+  galleryStage.addEventListener("pointermove", (event) => {
+    if (!galleryState.dragging) {
+      return;
+    }
+
+    const delta = event.clientX - galleryState.previousX;
+    galleryState.currentX += delta;
+    galleryState.velocity = delta;
+    galleryState.previousX = event.clientX;
+    renderGallery();
+  });
+
+  galleryStage.addEventListener("pointerup", endGalleryDrag);
+  galleryStage.addEventListener("pointercancel", endGalleryDrag);
+  galleryStage.addEventListener("pointerleave", endGalleryDrag);
+}
+
+window.addEventListener("load", scheduleLayoutUpdate, { once: true });
+window.addEventListener("resize", scheduleLayoutUpdate, { passive: true });
+
+if (!prefersReducedMotion && crochetThreadField) {
+  window.addEventListener("scroll", requestThreadUpdate, { passive: true });
+}
+
+scheduleLayoutUpdate();
