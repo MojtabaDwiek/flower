@@ -24,20 +24,34 @@
     <noscript>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
     </noscript>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/locomotive-scroll/4.1.4/locomotive-scroll.min.css" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
+    <div class="page-loader" role="status" aria-live="polite">
+      <div class="loader-crochet" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <p>Stitching your flowers...</p>
+    </div>
+    <div class="simple-cursor" aria-hidden="true">
+      <span></span>
+    </div>
+
     <header class="site-header" aria-label="Primary navigation">
       <a class="brand-mark" href="#top" aria-label="Flowers and More home">
         <img src="assets/logo.png" alt="Flowers and More" />
       </a>
       <div class="header-actions">
-        <a class="book-link" href="#contact">Book</a>
+        <a class="book-link" href="#contact">Order Now</a>
       </div>
       
     </header>
 
-    <main id="top">
+    <div class="smooth-scroll" data-scroll-container>
+    <main id="top" data-scroll-section>
       <section class="hero" aria-labelledby="hero-title">
         <video class="hero-media" autoplay muted loop playsinline preload="metadata" aria-hidden="true">
           <source src="assets/Video 4.mp4" type="video/mp4" />
@@ -45,15 +59,11 @@
         <div class="hero-overlay" aria-hidden="true"></div>
         
         <div class="hero-copy">
-          <p>Flowers and More - Handmade crochet studio</p>
+          <p>Flowers and More - Handmade crochet</p>
           <h1 id="hero-title">Find the spirit of handmade gifting</h1>
           <a class="text-link" href="#gallery">Discover our work</a>
         </div>
-        <div class="hero-booking" aria-label="Quick request">
-          <span>Custom order</span>
-          <strong>Tell us your date</strong>
-          <a href="#contact">Send request</a>
-        </div>
+        
       </section>
 
       <section class="intro-section reveal" id="about" aria-labelledby="intro-title">
@@ -64,11 +74,10 @@
             Every bouquet, charm, and keepsake is shaped with patient hands, soft color, and the kind of
             detail that makes a simple gift feel deeply personal.
           </p>
-          <a class="button-link" href="#contact">Send request</a>
+          <a class="button-link" href="#contact">Order Now</a>
         </div>
-        <div class="intro-media" aria-hidden="true">
-          <img src="assets/c9.jpeg" alt="" />
-          <img src="assets/c10.jpeg" alt="" />
+        <div class="intro-media">
+          <img src="assets/c12.jpg" alt="Handmade crochet floral arrangement" />
         </div>
       </section>
 
@@ -79,19 +88,29 @@
           <img src="assets/c3.jpeg" alt="Handmade crochet gift" />
           <img src="assets/c4.jpeg" alt="Crochet arrangement" />
           <img src="assets/c5.jpeg" alt="Soft crochet detail" />
+          <img src="assets/c6.jpeg" alt="Custom crochet piece" />
+          <img src="assets/c7.jpeg" alt="Gift detail" />
+          <img src="assets/c8.jpeg" alt="Crochet floral work" />
+          <img src="assets/c9.jpeg" alt="Crochet keepsake" />
+          <img src="assets/c10.webp" alt="Crochet handmade arrangement" />
           <img src="assets/c1.jpeg" alt="" aria-hidden="true" />
           <img src="assets/c2.jpeg" alt="" aria-hidden="true" />
           <img src="assets/c3.jpeg" alt="" aria-hidden="true" />
           <img src="assets/c4.jpeg" alt="" aria-hidden="true" />
           <img src="assets/c5.jpeg" alt="" aria-hidden="true" />
+          <img src="assets/c6.jpeg" alt="" aria-hidden="true" />
+          <img src="assets/c7.jpeg" alt="" aria-hidden="true" />
+          <img src="assets/c8.jpeg" alt="" aria-hidden="true" />
+          <img src="assets/c9.jpeg" alt="" aria-hidden="true" />
+          <img src="assets/c10.webp" alt="" aria-hidden="true" />
         </div>
       </section>
 
       <section class="split-feature reveal" id="stay" aria-labelledby="stay-title">
         <div class="feature-images">
           <img src="assets/c6.jpeg" alt="Custom crochet piece" />
-          <img src="assets/c7.jpeg" alt="Gift detail" />
-          <img src="assets/c8.jpeg" alt="Crochet floral work" />
+          <img src="assets/c3.jpeg" alt="Gift detail" />
+          <img src="assets/c7.jpeg" alt="Crochet floral work" />
         </div>
         <div class="feature-copy">
           <p class="section-kicker">Stylish and comfortable living</p>
@@ -100,7 +119,7 @@
             Choose a finished arrangement or begin with a custom palette. Each piece is prepared slowly,
             checked closely, and wrapped with a quiet gift-ready finish.
           </p>
-          <a class="button-link" href="#contact">Discover rooms</a>
+          <a class="button-link" href="#contact">Order Now</a>
         </div>
       </section>
 
@@ -110,23 +129,34 @@
           <p class="section-kicker">What our guests say</p>
           <h2 id="testimonials-title">Real stories, happy memories, and heartfelt impressions.</h2>
         </div>
-        <div class="marquee" aria-hidden="true">
+        <div class="marquee">
           <div>
-            <blockquote>Beautiful handmade work, warm packaging, and such thoughtful colors.</blockquote>
-            <blockquote>The order felt personal from the first message to the final gift.</blockquote>
-            <blockquote>Soft, detailed, and made with real care. We will happily return.</blockquote>
-            <blockquote>Beautiful handmade work, warm packaging, and such thoughtful colors.</blockquote>
-            <blockquote>The order felt personal from the first message to the final gift.</blockquote>
-            <blockquote>Soft, detailed, and made with real care. We will happily return.</blockquote>
+            <blockquote>Yaane l bouquet tili3 ahla men l sowar. Ktir ndef, ktir soft, w byeswa.</blockquote>
+            <blockquote>Merci kteer, l alwen exactly metel ma baddi. Mama habbiton men awal nazra.</blockquote>
+            <blockquote>Talabet bel ekhir w ba3d fiya waslit mratabe w mahdoume. Akid mesh ekhir marra.</blockquote>
+            <blockquote>L detail taba3 l crochet bi3a2ed. Byin 3leya ma3moule b rawa2 w men l aleb.</blockquote>
+            <blockquote>Sara7a hdiye ktir classy. Kell l 3ayle se2alo min wen jebta.</blockquote>
+            <blockquote>Ba3atet bas lonayn w fhemet kell l vibe. Shoghol lebnene bi farrif l aleb.</blockquote>
+            <blockquote>L wrapping, l ward, w l details l zghar, kellon ma3moulin b 7ob.</blockquote>
+            <blockquote>Ktir cute w ndef. 7atayta 3al tawle w ba2it helwe, mesh metel l ward l tabi3e.</blockquote>
+            <blockquote aria-hidden="true">Yaane l bouquet tili3 ahla men l sowar. Ktir ndef, ktir soft, w byeswa.</blockquote>
+            <blockquote aria-hidden="true">Merci kteer, l alwen exactly metel ma baddi. Mama habbiton men awal nazra.</blockquote>
+            <blockquote aria-hidden="true">Talabet bel ekhir w ba3d fiya waslit mratabe w mahdoume. Akid mesh ekhir marra.</blockquote>
+            <blockquote aria-hidden="true">L detail taba3 l crochet bi3a2ed. Byin 3leya ma3moule b rawa2 w men l aleb.</blockquote>
+            <blockquote aria-hidden="true">Sara7a hdiye ktir classy. Kell l 3ayle se2alo min wen jebta.</blockquote>
+            <blockquote aria-hidden="true">Ba3atet bas lonayn w fhemet kell l vibe. Shoghol lebnene bi farrif l aleb.</blockquote>
+            <blockquote aria-hidden="true">L wrapping, l ward, w l details l zghar, kellon ma3moulin b 7ob.</blockquote>
+            <blockquote aria-hidden="true">Ktir cute w ndef. 7atayta 3al tawle w ba2it helwe, mesh metel l ward l tabi3e.</blockquote>
           </div>
         </div>
       </section>
     </main>
 
-    <footer class="site-footer" id="contact">
+    <footer class="site-footer" id="contact" data-scroll-section>
       <div>
         <h2>Flowers and More</h2>
         <p>Handmade crochet studio | Custom bouquets | Gift-ready keepsakes</p>
+        <p class="footer-credit">&copy; 2026 multydo.com. All rights reserved.</p>
       </div>
       
       <div class="footer-social">
@@ -135,7 +165,9 @@
         <a href="https://wa.me/96100000000" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
       </div>
     </footer>
+    </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/locomotive-scroll/4.1.4/locomotive-scroll.min.js"></script>
     <script src="script.js"></script>
   </body>
 </html>
