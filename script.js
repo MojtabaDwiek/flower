@@ -1,4 +1,31 @@
-(() => {
+(async () => {
+  function waitForGsap() {
+    if (window.gsap) {
+      return Promise.resolve();
+    }
+
+    return new Promise((resolve) => {
+      let timeout = 0;
+      let interval = 0;
+      let settled = false;
+
+      const finish = () => {
+        if (settled) return;
+        settled = true;
+        window.clearTimeout(timeout);
+        window.clearInterval(interval);
+        resolve();
+      };
+
+      timeout = window.setTimeout(finish, 700);
+      interval = window.setInterval(() => {
+        if (window.gsap) finish();
+      }, 25);
+    });
+  }
+
+  await waitForGsap();
+
   const body = document.body;
   const gsap = window.gsap;
   const hasGsap = Boolean(gsap);
@@ -83,9 +110,12 @@
 
     const col = gridColumn();
     const gap = isDesktop() ? 24 : 12;
-    const activeWidth = isDesktop() ? col * 6 + 10 * 5 : col * 4 + 10 * 3;
+    const margin = isDesktop() ? 36 : 18;
+    const desiredActiveWidth = isDesktop() ? col * 6 + 10 * 5 : window.innerWidth - margin * 2;
+    const maxItemHeight = Math.max(120, window.innerHeight - (isDesktop() ? 176 : 192));
+    const activeWidth = Math.min(desiredActiveWidth, maxItemHeight * (16 / 9));
     const inactiveWidth = isFilm ? activeWidth : col;
-    const itemHeight = isDesktop() ? window.innerHeight * 0.62 : Math.min(activeWidth * 1.09, window.innerHeight - 176);
+    const itemHeight = activeWidth * (9 / 16);
     const visibleRange = isFilm ? 2.35 : 3.65;
 
     metricsCache = {
@@ -173,14 +203,26 @@
       image.loading = index < 5 ? "eager" : "lazy";
       image.decoding = "async";
       image.fetchPriority = index < 3 ? "high" : "low";
-      image.src = project.src;
 
+      let triedFallback = false;
       image.addEventListener("load", () => item.classList.add("is-loaded"));
       image.addEventListener("error", () => {
-        if (project.fallback && image.src !== project.fallback) {
+        if (!triedFallback && project.fallback && image.getAttribute("src") !== project.fallback) {
+          triedFallback = true;
           image.src = project.fallback;
+          return;
         }
+
+        image.hidden = true;
+        item.classList.add("is-loaded");
       });
+
+      if (project.src) {
+        image.src = project.src;
+      } else {
+        image.hidden = true;
+        item.classList.add("is-loaded");
+      }
 
       item.appendChild(image);
       item.addEventListener("click", () => {
@@ -388,11 +430,8 @@
       const sidePush = isFilm ? 0 : sign * ((metrics.activeWidth - metrics.inactiveWidth) / 2) * clamp(abs, 0, 1);
       const x = position * spacing + sidePush;
       const opacity = visible ? (isFilm ? (abs < 2.05 ? 1 : 0.12) : 1) : 0;
-      const scale = isFilm && !isActive ? 0.94 : 1;
-      const itemTransform = `translate3d(calc(-50% + ${x.toFixed(3)}px), -50%, 0) scale(${scale})`;
-      const imageShift = clamp(position * (isFilm ? -1.8 : -5.5), -18, 18);
-      const imageScale = isActive ? 1.015 : isFilm ? 1.07 : 1.14;
-      const imageTransform = `translate3d(${imageShift.toFixed(3)}%, 0, 0) scale(${imageScale})`;
+      const itemTransform = `translate3d(calc(-50% + ${x.toFixed(3)}px), -50%, 0)`;
+      const imageTransform = "none";
 
       entry.position = position;
 

@@ -450,8 +450,8 @@ body.menu-open .mobile-toggle span:last-child {
   max-width: none;
   object-fit: cover;
   opacity: 0;
-  transform: scale(1.06);
-  filter: blur(2.5px) saturate(0.78) brightness(0.66);
+  transform: none;
+  filter: saturate(0.78) brightness(0.66);
   transition: opacity 460ms ease, transform 620ms var(--ease), filter 260ms var(--ease);
   will-change: transform;
   pointer-events: none;
@@ -464,11 +464,12 @@ body.menu-open .mobile-toggle span:last-child {
 }
 
 .work-item.is-active img {
-  filter: blur(0) saturate(1.04) brightness(1);
+  object-fit: contain;
+  filter: saturate(1.04) brightness(1);
 }
 
 .work-item:not(.is-active) img {
-  filter: blur(2.5px) saturate(0.78) brightness(0.66);
+  filter: saturate(0.78) brightness(0.66);
 }
 
 .work-item::before {
@@ -524,7 +525,7 @@ body.is-moving .hero-background-video {
 
 @media (hover: hover) and (pointer: fine) {
   .work-item:not(.is-active):hover img {
-    filter: blur(0.25px) saturate(1) brightness(0.92);
+    filter: saturate(1) brightness(0.92);
   }
 
   .work-item:not(.is-active):hover::before {
@@ -717,7 +718,6 @@ body.is-moving .hero-background-video {
   gap: 0;
   padding: 8rem var(--grid-margin) 6.75rem;
   background: rgba(0, 0, 0, 0.86);
-  backdrop-filter: blur(18px);
   clip-path: inset(0 0 100% 0);
   pointer-events: none;
 }
