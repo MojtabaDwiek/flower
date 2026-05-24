@@ -32,7 +32,6 @@
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   const loader = document.querySelector(".intro-loader");
-  const loaderCount = document.querySelector("[data-loader-count]");
   const revealItems = document.querySelectorAll(".js-reveal");
   const caseNodes = Array.from(document.querySelectorAll(".js-case-item"));
   const workList = document.querySelector("[data-work-list]");
@@ -48,15 +47,23 @@
   const lengthContainer = document.querySelector(".js-current-length");
   const viewToggle = document.querySelector(".js-view-toggle");
   const projectList = document.querySelector(".project-list");
-  const mobileToggle = document.querySelector(".mobile-toggle");
-  const mobileMenu = document.querySelector(".mobile-menu");
   const aboutPanel = document.querySelector(".about-panel");
   const aboutClose = document.querySelector(".about-close");
-  const aboutContent = document.querySelectorAll(".about-panel > div, .about-panel > p");
+  const aboutContent = document.querySelectorAll(".about-panel > div");
   const timePanel = document.querySelector(".time-panel");
   const timeButtons = document.querySelectorAll(".time-button, .place-button");
   const cursor = document.querySelector(".cursor-orb");
   const canvas = document.querySelector("[data-canvas]");
+  const timeNodes = document.querySelectorAll("[data-time]");
+  const dateNodes = document.querySelectorAll("[data-date]");
+  const yearNodes = document.querySelectorAll("[data-year]");
+  const hourOne = document.querySelector("[data-hour-one]");
+  const hourTwo = document.querySelector("[data-hour-two]");
+  const minuteOne = document.querySelector("[data-minute-one]");
+  const minuteTwo = document.querySelector("[data-minute-two]");
+  const secondsEl = document.querySelector("[data-seconds]");
+  const ampmEl = document.querySelector("[data-ampm]");
+  const hasClock = Boolean(timeNodes.length || dateNodes.length || yearNodes.length || hourOne || hourTwo || minuteOne || minuteTwo || secondsEl || ampmEl);
 
   const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
   const wrap = (index, length) => ((index % length) + length) % length;
@@ -78,6 +85,8 @@
   let isFilm = !isDesktop();
   let dragStart = null;
   let dragTargetStart = 0;
+  let dragMoved = false;
+  let suppressClick = false;
   let snapTimer = 0;
   let titleStep = 18;
   let roleStep = 18;
@@ -165,19 +174,19 @@
     }
   }
 
-  function focusProject(index, snapDelay = 80) {
+  function focusProject(index, snapDelay = 0) {
     if (!projects.length) {
       return;
     }
 
     const total = projects.length;
-    const current = wrap(Math.round(-targetX), total);
+    const current = wrap(Math.round(-currentX), total);
     let delta = index - current;
 
     if (delta > total / 2) delta -= total;
     if (delta < -total / 2) delta += total;
 
-    targetX -= delta;
+    targetX = Math.round(currentX) - delta;
     targetX = Math.round(targetX);
     needsRender = true;
     markMoving();
@@ -190,47 +199,58 @@
     }
 
     workList.innerHTML = "";
-    items = projects.map((project, index) => {
-      const item = document.createElement("button");
-      const image = document.createElement("img");
+    items = [];
 
-      item.className = "work-item";
-      item.type = "button";
-      item.setAttribute("aria-label", project.title);
-      item.setAttribute("aria-pressed", "false");
-      item.dataset.index = String(index);
-      image.alt = project.title;
-      image.loading = index < 5 ? "eager" : "lazy";
-      image.decoding = "async";
-      image.fetchPriority = index < 3 ? "high" : "low";
+    projects.forEach((project, index) => {
+      [0, 1].forEach((lane) => {
+        const item = document.createElement("button");
+        const image = document.createElement("img");
 
-      let triedFallback = false;
-      image.addEventListener("load", () => item.classList.add("is-loaded"));
-      image.addEventListener("error", () => {
-        if (!triedFallback && project.fallback && image.getAttribute("src") !== project.fallback) {
-          triedFallback = true;
-          image.src = project.fallback;
-          return;
+        item.className = `work-item${lane ? " is-secondary" : ""}`;
+        item.type = "button";
+        item.setAttribute("aria-label", project.title);
+        item.setAttribute("aria-pressed", "false");
+        item.dataset.index = String(index);
+        item.dataset.lane = String(lane);
+        image.alt = project.title;
+        image.loading = "eager";
+        image.decoding = "async";
+        image.fetchPriority = lane === 0 && index < 3 ? "high" : "low";
+
+        let triedFallback = false;
+        image.addEventListener("load", () => item.classList.add("is-loaded"));
+        image.addEventListener("error", () => {
+          if (!triedFallback && project.fallback && image.getAttribute("src") !== project.fallback) {
+            triedFallback = true;
+            image.src = project.fallback;
+            return;
+          }
+
+          image.hidden = true;
+          item.classList.add("is-loaded");
+        });
+
+        if (project.src) {
+          image.src = project.src;
+        } else {
+          image.hidden = true;
+          item.classList.add("is-loaded");
         }
 
-        image.hidden = true;
-        item.classList.add("is-loaded");
+        item.appendChild(image);
+        item.addEventListener("click", (event) => {
+          if (suppressClick) {
+            suppressClick = false;
+            return;
+          }
+
+          event.preventDefault();
+          focusProject(index);
+        });
+
+        workList.appendChild(item);
+        items.push({ item, image, project, lane, position: 0, itemStyles: {}, imageStyles: {}, active: false, visible: false });
       });
-
-      if (project.src) {
-        image.src = project.src;
-      } else {
-        image.hidden = true;
-        item.classList.add("is-loaded");
-      }
-
-      item.appendChild(image);
-      item.addEventListener("click", () => {
-        focusProject(index);
-      });
-
-      workList.appendChild(item);
-      return { item, image, project, position: 0, itemStyles: {}, imageStyles: {}, active: false, visible: false };
     });
   }
 
@@ -403,7 +423,7 @@
     }
 
     const metrics = layoutMetrics();
-    const total = items.length;
+    const total = projects.length;
     const nextActive = wrap(Math.round(-currentX), total);
 
     if (nextActive !== activeIndex) {
@@ -411,26 +431,24 @@
       setDetails(activeIndex);
     }
 
-    items.forEach((entry, index) => {
-      const rawPosition = index + currentX;
+    items.forEach((entry) => {
+      const laneX = isFilm && entry.lane === 1 ? -currentX : currentX;
+      const rawPosition = entry.project.index + laneX;
       const position = centeredPosition(rawPosition, total);
       const abs = Math.abs(position);
       const sign = Math.sign(position);
-      const isActive = index === activeIndex;
-      const visible = abs < metrics.visibleRange;
+      const isActive = entry.project.index === activeIndex && entry.lane === 0;
+      const visible = (!entry.lane || isFilm) && abs < metrics.visibleRange;
       const wasVisible = entry.visible;
-      const width = isFilm
-        ? metrics.activeWidth
-        : isActive
-          ? metrics.activeWidth
-          : metrics.inactiveWidth;
+      const width = isActive ? metrics.activeWidth : metrics.inactiveWidth;
       const spacing = isFilm
         ? metrics.activeWidth + metrics.gap
         : metrics.inactiveWidth + metrics.gap;
       const sidePush = isFilm ? 0 : sign * ((metrics.activeWidth - metrics.inactiveWidth) / 2) * clamp(abs, 0, 1);
       const x = position * spacing + sidePush;
-      const opacity = visible ? (isFilm ? (abs < 2.05 ? 1 : 0.12) : 1) : 0;
-      const itemTransform = `translate3d(calc(-50% + ${x.toFixed(3)}px), -50%, 0)`;
+      const laneOffsetY = isFilm ? (entry.lane === 1 ? metrics.itemHeight * 0.62 : -metrics.itemHeight * 0.62) : 0;
+      const opacity = visible ? 1 : 0;
+      const itemTransform = `translate3d(calc(-50% + ${x.toFixed(3)}px), calc(-50% + ${laneOffsetY.toFixed(3)}px), 0)`;
       const imageTransform = "none";
 
       entry.position = position;
@@ -517,7 +535,7 @@
     window.addEventListener(
       "wheel",
       (event) => {
-        if (body.classList.contains("time-open") || body.classList.contains("about-open") || body.classList.contains("menu-open")) {
+        if (body.classList.contains("time-open") || body.classList.contains("about-open")) {
           return;
         }
 
@@ -538,6 +556,8 @@
     workList.addEventListener("pointerdown", (event) => {
       dragStart = { x: event.clientX, y: event.clientY };
       dragTargetStart = targetX;
+      dragMoved = false;
+      suppressClick = false;
       workList.classList.add("is-dragging");
       markMoving();
       workList.setPointerCapture?.(event.pointerId);
@@ -550,6 +570,10 @@
 
       const deltaX = event.clientX - dragStart.x;
       const deltaY = event.clientY - dragStart.y;
+      if (Math.hypot(deltaX, deltaY) > 6) {
+        dragMoved = true;
+      }
+
       targetX = dragTargetStart + (deltaX + (isDesktop() ? 0 : deltaY)) / (145 + (isFilm ? 360 : 0));
       needsRender = true;
       markMoving();
@@ -560,6 +584,7 @@
         return;
       }
 
+      suppressClick = dragMoved;
       dragStart = null;
       workList.classList.remove("is-dragging");
       workList.releasePointerCapture?.(event.pointerId);
@@ -571,13 +596,12 @@
 
     window.addEventListener("keydown", (event) => {
       if (event.key === "Escape") {
-        setMobileMenu(false);
         setTimePanel(false);
         setAboutPanel(false);
         return;
       }
 
-      if (body.classList.contains("time-open") || body.classList.contains("about-open") || body.classList.contains("menu-open")) {
+      if (body.classList.contains("time-open") || body.classList.contains("about-open")) {
         return;
       }
 
@@ -639,10 +663,68 @@
     );
   }
 
-  function runIntro() {
+  function waitForWindowLoad() {
+    if (document.readyState === "complete") {
+      return Promise.resolve();
+    }
+
+    return new Promise((resolve) => {
+      window.addEventListener("load", resolve, { once: true });
+    });
+  }
+
+  function waitForImage(image) {
+    if (!image || image.hidden) {
+      return Promise.resolve();
+    }
+
+    if (image.complete) {
+      return image.decode?.().catch(() => {}) || Promise.resolve();
+    }
+
+    return new Promise((resolve) => {
+      const finish = () => {
+        image.removeEventListener("load", finish);
+        image.removeEventListener("error", finish);
+        resolve();
+      };
+
+      image.addEventListener("load", finish, { once: true });
+      image.addEventListener("error", finish, { once: true });
+    }).then(() => image.decode?.().catch(() => {}) || undefined);
+  }
+
+  function waitForVideo(video) {
+    if (!video || video.readyState >= 2) {
+      return Promise.resolve();
+    }
+
+    return new Promise((resolve) => {
+      const finish = () => {
+        video.removeEventListener("loadeddata", finish);
+        video.removeEventListener("error", finish);
+        resolve();
+      };
+
+      video.addEventListener("loadeddata", finish, { once: true });
+      video.addEventListener("error", finish, { once: true });
+    });
+  }
+
+  async function waitForPageReady() {
+    await waitForWindowLoad();
+    await Promise.all([
+      document.fonts?.ready || Promise.resolve(),
+      ...Array.from(document.images, waitForImage),
+      ...Array.from(document.querySelectorAll("video"), waitForVideo),
+    ]);
+  }
+
+  async function runIntro() {
     body.classList.add("is-loading");
     setFilmMode(isFilm);
     renderWorkItems();
+    await waitForPageReady();
 
     if (!loader || !hasGsap || reduceMotion) {
       loader?.remove();
@@ -651,64 +733,24 @@
       return;
     }
 
-    const counterState = { value: 0 };
-    gsap.set(".intro-logo span", { scaleY: 0 });
-    gsap.set(".intro-mask", { scaleY: 1, transformOrigin: "top" });
-
     const tl = gsap.timeline({
-      defaults: { ease: "expo.out" },
+      defaults: { ease: "expo.inOut" },
       onComplete: () => {
         loader.remove();
         body.classList.remove("is-loading");
       },
     });
 
-    tl.to(".intro-logo span", { scaleY: 1, duration: 0.74, stagger: 0.08 }, 0.12);
-    tl.to(
-      counterState,
-      {
-        value: 100,
-        duration: 1.35,
-        ease: "power2.out",
-        onUpdate: () => {
-          if (loaderCount) loaderCount.textContent = Math.round(counterState.value);
-        },
-      },
-      0,
-    );
-    tl.to(".intro-mask", { scaleY: 0, duration: 0.85 }, 0.78);
-    tl.to(".intro-counter", { yPercent: -120, clipPath: "inset(0% 0% 100% 0%)", duration: 0.7 }, 1.06);
-    tl.to(".intro-loader", { clipPath: "inset(0% 0% 100% 0%)", duration: 1.05 }, 1.2);
-    tl.add(() => revealInterface(), 0.94);
-  }
-
-  function setMobileMenu(open) {
-    body.classList.toggle("menu-open", open);
-    mobileToggle?.setAttribute("aria-expanded", String(open));
-    mobileMenu?.setAttribute("aria-hidden", String(!open));
-
-    if (!mobileMenu) return;
-
-    if (hasGsap && !reduceMotion) {
-      gsap.to(mobileMenu, {
-        clipPath: open ? "inset(0% 0% 0% 0%)" : "inset(0% 0% 100% 0%)",
-        pointerEvents: open ? "auto" : "none",
-        duration: 0.75,
-        ease: "expo.inOut",
-      });
-    } else {
-      setInline(mobileMenu, {
-        clipPath: open ? "inset(0% 0% 0% 0%)" : "inset(0% 0% 100% 0%)",
-        pointerEvents: open ? "auto" : "none",
-      });
-    }
+    tl.to(".loader-wrapper", { yPercent: -5, opacity: 0, duration: 0.65 }, 0);
+    tl.to(".loader-text", { y: -10, opacity: 0, duration: 0.42 }, 0);
+    tl.to(".intro-loader", { clipPath: "inset(0% 0% 100% 0%)", duration: 0.92 }, 0.24);
+    tl.add(() => revealInterface(), 0.3);
   }
 
   function setTimePanel(open, skipCrossClose = false) {
     if (!timePanel) return;
 
     if (open && !skipCrossClose) {
-      setMobileMenu(false);
       setAboutPanel(false, true);
     }
 
@@ -741,7 +783,6 @@
     if (!aboutPanel) return;
 
     if (open && !skipCrossClose) {
-      setMobileMenu(false);
       setTimePanel(false, true);
     }
 
@@ -781,7 +822,6 @@
   }
 
   function bindNavigation() {
-    mobileToggle?.addEventListener("click", () => setMobileMenu(!body.classList.contains("menu-open")));
     viewToggle?.addEventListener("click", () => setFilmMode(!isFilm));
     aboutClose?.addEventListener("click", () => setAboutPanel(false));
 
@@ -796,7 +836,6 @@
       link.addEventListener("click", (event) => {
         event.preventDefault();
         setAboutPanel(false);
-        setMobileMenu(false);
         setTimePanel(false);
       });
     });
@@ -840,23 +879,17 @@
     const hourNumber = Number(hour);
     const headerTime = `${Number.isNaN(hourNumber) ? hour : String(hourNumber)}:${minute}${dayPeriod} ${zone}`;
 
-    document.querySelectorAll("[data-time]").forEach((node) => {
+    timeNodes.forEach((node) => {
       node.textContent = headerTime;
     });
-    document.querySelectorAll("[data-date]").forEach((node) => {
+    dateNodes.forEach((node) => {
       node.textContent = `${day} ${month}`;
     });
-    document.querySelectorAll("[data-year]").forEach((node) => {
+    yearNodes.forEach((node) => {
       node.textContent = year;
     });
 
     const twoDigitHour = String(hourNumber || 12).padStart(2, "0");
-    const hourOne = document.querySelector("[data-hour-one]");
-    const hourTwo = document.querySelector("[data-hour-two]");
-    const minuteOne = document.querySelector("[data-minute-one]");
-    const minuteTwo = document.querySelector("[data-minute-two]");
-    const secondsEl = document.querySelector("[data-seconds]");
-    const ampmEl = document.querySelector("[data-ampm]");
 
     if (hourOne) hourOne.textContent = twoDigitHour[0];
     if (hourTwo) hourTwo.textContent = twoDigitHour[1];
@@ -966,8 +999,10 @@
   buildDetails();
   bindWorkInputs();
   bindNavigation();
-  updateClock();
-  window.setInterval(updateClock, 1000);
+  if (hasClock) {
+    updateClock();
+    window.setInterval(updateClock, 1000);
+  }
   initCursor();
   initCanvas();
   tickWork();

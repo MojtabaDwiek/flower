@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="A Cynx-inspired interactive portfolio built with HTML, CSS, JavaScript, and GSAP."
+      content="Wobble Wires is a handmade fuzzy wire shop."
     />
     <title>Wobble Wires</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -18,46 +18,53 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div class="intro-loader" aria-live="polite" aria-label="Loading portfolio">
-      <div class="intro-logo" aria-hidden="true">
-        <span></span>
-        <span></span>
-        <span></span>
+    <div class="intro-loader" aria-live="polite" aria-label="Loading Wobble Wires">
+      <div class="loader-wrapper" aria-hidden="true">
+        <div class="candles">
+          <div class="light__wave"></div>
+          <div class="candle1">
+            <div class="candle1__body">
+              <div class="candle1__eyes">
+                <span class="candle1__eyes-one"></span>
+                <span class="candle1__eyes-two"></span>
+              </div>
+              <div class="candle1__mouth"></div>
+            </div>
+            <div class="candle1__stick"></div>
+          </div>
+          <div class="candle2">
+            <div class="candle2__body">
+              <div class="candle2__eyes">
+                <div class="candle2__eyes-one"></div>
+                <div class="candle2__eyes-two"></div>
+              </div>
+            </div>
+            <div class="candle2__stick"></div>
+          </div>
+          <div class="candle2__fire"></div>
+          <div class="sparkles-one"></div>
+          <div class="sparkles-two"></div>
+          <div class="candle__smoke-one"></div>
+          <div class="candle__smoke-two"></div>
+        </div>
+        <div class="floor"></div>
       </div>
-      <div class="intro-mask"></div>
-      <div class="intro-counter">
-        <span data-loader-count>0</span>
-      </div>
+      <p class="loader-text">Loading handmade pieces</p>
     </div>
 
     <div class="cursor-orb" aria-hidden="true"></div>
-    <svg class="filter-defs" width="0" height="0" aria-hidden="true" focusable="false">
-      <filter id="work-wave-filter" x="-10%" y="-10%" width="120%" height="120%">
-        <feTurbulence type="fractalNoise" baseFrequency="0.012 0.045" numOctaves="2" seed="8" result="waves">
-          <animate
-            attributeName="baseFrequency"
-            dur="1.8s"
-            values="0.012 0.045;0.026 0.06;0.016 0.038;0.012 0.045"
-            repeatCount="indefinite"
-          />
-        </feTurbulence>
-        <feDisplacementMap in="SourceGraphic" in2="waves" scale="10" xChannelSelector="R" yChannelSelector="G" />
-      </filter>
-    </svg>
 
     <header class="site-header" aria-label="Primary navigation">
       <a class="brand js-reveal" href="#work" aria-label="Home">
         <span class="brand-hover">
-          <svg viewBox="0 0 46 13" aria-hidden="true" focusable="false">
-            <path fill="currentColor" d="m45.097.782-3.903 5.61L45.097 12h-2.722l-2.513-3.724L37.38 12h-2.723l3.89-5.609-3.89-5.609h2.723l2.497 3.74 2.498-3.74h2.722ZM33.455.782V12h-2.483l-5.056-7.404V12h-2.393V.782h2.468l5.07 7.404V.782h2.394ZM19.89.782h2.587l-4.292 6.94V12h-2.393V7.722L11.499.782H14.1l2.887 4.712L19.89.782ZM9.288 8.455l1.616 1.167c-.898 1.585-2.678 2.453-4.457 2.453C3.29 12.075.598 9.577.598 6.39S3.291.707 6.447.707c1.78 0 3.56.868 4.457 2.468L9.288 4.342c-.583-.883-1.51-1.645-2.871-1.645-2.005 0-3.426 1.6-3.426 3.694s1.421 3.694 3.426 3.694c1.36 0 2.273-.747 2.871-1.63Z" />
-          </svg>
+          <img src="assets/logo.png" alt="" aria-hidden="true" />
         </span>
         <span>
-          <svg viewBox="0 0 46 13" aria-hidden="true" focusable="false">
-            <path fill="currentColor" d="m45.097.782-3.903 5.61L45.097 12h-2.722l-2.513-3.724L37.38 12h-2.723l3.89-5.609-3.89-5.609h2.723l2.497 3.74 2.498-3.74h2.722ZM33.455.782V12h-2.483l-5.056-7.404V12h-2.393V.782h2.468l5.07 7.404V.782h2.394ZM19.89.782h2.587l-4.292 6.94V12h-2.393V7.722L11.499.782H14.1l2.887 4.712L19.89.782ZM9.288 8.455l1.616 1.167c-.898 1.585-2.678 2.453-4.457 2.453C3.29 12.075.598 9.577.598 6.39S3.291.707 6.447.707c1.78 0 3.56.868 4.457 2.468L9.288 4.342c-.583-.883-1.51-1.645-2.871-1.645-2.005 0-3.426 1.6-3.426 3.694s1.421 3.694 3.426 3.694c1.36 0 2.273-.747 2.871-1.63Z" />
-          </svg>
+          <img src="assets/logo.png" alt="Home" />
         </span>
       </a>
+
+      <p class="header-quote js-reveal">Handmade fuzzy wires, softly made to wobble.</p>
 
       <nav class="main-nav js-reveal" aria-label="Site navigation">
         
@@ -67,35 +74,25 @@
         </a>
       </nav>
 
-      <button class="mobile-toggle js-reveal" type="button" aria-label="Open menu" aria-expanded="false">
-        <span></span>
-        <span></span>
-      </button>
+      <a class="mobile-about-link js-reveal" href="#about">About</a>
     </header>
-
-    <div class="mobile-menu" aria-hidden="true">
-      <nav aria-label="Mobile navigation">
-        
-        <a href="#about">About</a>
-      </nav>
-    </div>
 
     
 
     <main id="work" class="work-stage" aria-labelledby="page-title">
-      <video class="hero-background-video" autoplay muted loop playsinline preload="metadata" aria-hidden="true">
+      <video class="hero-background-video" autoplay muted loop playsinline preload="auto" aria-hidden="true">
         <source src="assets/video.mp4" type="video/mp4" />
       </video>
       <canvas class="stage-canvas" data-canvas aria-hidden="true"></canvas>
 
       <div class="seo-copy">
-        <h1 id="page-title">Multidisciplinary creative portfolio</h1>
+        <h1 id="page-title">Wobble Wires</h1>
         <p>
-          A dark, motion-led work overview inspired by the spatial project system and quiet interface language of Cynx.
+          Wobble Wires is a handmade fuzzy wire shop.
         </p>
       </div>
 
-      <section class="work-overview" aria-label="Selected projects">
+      <section class="work-overview" aria-label="Selected handmade fuzzy wire pieces">
         <div class="hidden-cases" aria-hidden="true">
           <div class="js-case-item"  data-src="assets/c1.jpeg"></div>
           
@@ -114,7 +111,26 @@
         <div class="list-container js-container-list" data-work-list></div>
       </section>
 
-      
+      <div class="shop-actions shop-actions-main js-reveal" aria-label="Order and social links">
+        <a
+          class="order-link"
+          href="https://wa.me/+9613957449?text=Hi%20Wobble%20Wires%2C%20I%27d%20like%20to%20order."
+          target="_blank"
+          rel="noopener"
+          aria-label="Order on WhatsApp"
+        >
+          <span class="order-link-icon" aria-hidden="true">wa</span>
+          <span>Order</span>
+        </a>
+        <div class="social-links" aria-label="Social links">
+          <a href="https://www.instagram.com/flower.and.more26?igsh=MW1wbXgwcmZ1bjR5ag==" target="_blank" rel="noopener" aria-label="Instagram">
+            <span aria-hidden="true">ig</span>
+          </a>
+          <a href="https://www.facebook.com/share/1EQNs1P3n4/" target="_blank" rel="noopener" aria-label="Facebook">
+            <span aria-hidden="true">fb</span>
+          </a>
+        </div>
+      </div>
 
       <div class="project-counter js-project-counter" aria-label="Project counter">
         <div class="counter-window">
@@ -122,9 +138,9 @@
             <div class="js-item-list"></div>
             <div class="js-item-list-copy"></div>
           </div>
-          <div class="counter-ghost" aria-hidden="true">0</div>
+          
         </div>
-        <div class="current-length js-current-length">13</div>
+        
       </div>
 
       <button class="view-toggle js-view-toggle" type="button" aria-label="View toggle" aria-pressed="false">
@@ -143,13 +159,34 @@
     <section class="about-panel" id="about" aria-hidden="true">
       <button class="about-close" type="button" aria-label="Close about panel">Close</button>
       <div>
-        <p class="about-kicker">Multidisciplinary creative / developer</p>
-        <h2>Crafting compact digital systems with tactile motion, strong rhythm, and quietly precise interaction.</h2>
+        <p class="about-kicker">Handmade fuzzy wire shop</p>
+        <h2>Wobble Wires makes soft, playful fuzzy wire pieces by hand.</h2>
       </div>
-      <p>
-        This page mirrors the Cynx homepage language: fixed navigation, a black interactive work stage, project metadata,
-        counter-driven browsing, an intro counter, and GSAP-led transitions.
-      </p>
+      <div class="about-copy">
+        <p>
+          Browse the collection, pick a piece, and move through colorful handmade designs crafted with care.
+        </p>
+        <div class="shop-actions shop-actions-about" aria-label="Order and social links">
+          <a
+            class="order-link"
+            href="https://wa.me/96100000000?text=Hi%20Wobble%20Wires%2C%20I%27d%20like%20to%20order."
+            target="_blank"
+            rel="noopener"
+            aria-label="Order on WhatsApp"
+          >
+            <span class="order-link-icon" aria-hidden="true">wa</span>
+            <span>Order</span>
+          </a>
+          <div class="social-links" aria-label="Social links">
+            <a href="https://www.instagram.com/wobblewires/" target="_blank" rel="noopener" aria-label="Instagram">
+              <span aria-hidden="true">ig</span>
+            </a>
+            <a href="https://www.facebook.com/wobblewires/" target="_blank" rel="noopener" aria-label="Facebook">
+              <span aria-hidden="true">fb</span>
+            </a>
+          </div>
+        </div>
+      </div>
     </section>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" async></script>
