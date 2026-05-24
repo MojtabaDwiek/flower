@@ -374,7 +374,6 @@ body.menu-open .mobile-toggle span:last-child {
   height: 100%;
   object-fit: cover;
   opacity: 0.24;
-  filter: saturate(0.72) contrast(1.05) brightness(0.58);
   transform: scale(1.02);
   pointer-events: none;
 }
@@ -439,7 +438,7 @@ body.menu-open .mobile-toggle span:last-child {
   transform-origin: center;
   backface-visibility: hidden;
   contain: layout paint size;
-  transition: width 720ms var(--ease), opacity 180ms linear;
+  transition: width 520ms var(--ease), opacity 160ms linear;
   will-change: transform, opacity;
 }
 
@@ -453,8 +452,8 @@ body.menu-open .mobile-toggle span:last-child {
   opacity: 0;
   transform: scale(1.06);
   filter: blur(2.5px) saturate(0.78) brightness(0.66);
-  transition: opacity 540ms ease, transform 720ms var(--ease), filter 340ms var(--ease);
-  will-change: transform, filter;
+  transition: opacity 460ms ease, transform 620ms var(--ease), filter 260ms var(--ease);
+  will-change: transform;
   pointer-events: none;
   user-select: none;
   -webkit-user-drag: none;
@@ -510,7 +509,17 @@ body.menu-open .mobile-toggle span:last-child {
 
 body.is-moving .work-item img,
 .list-container.is-dragging .work-item img {
-  transition-duration: 220ms;
+  filter: none;
+  transition-duration: 120ms;
+}
+
+body.is-moving .work-item:not(.is-active)::after,
+.list-container.is-dragging .work-item:not(.is-active)::after {
+  opacity: 0.58;
+}
+
+body.is-moving .hero-background-video {
+  opacity: 0.16;
 }
 
 @media (hover: hover) and (pointer: fine) {

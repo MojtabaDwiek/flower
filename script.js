@@ -10,6 +10,7 @@
   const caseNodes = Array.from(document.querySelectorAll(".js-case-item"));
   const workList = document.querySelector("[data-work-list]");
   const titleWindow = document.querySelector(".js-project-title");
+  const projectHud = document.querySelector(".js-project-details");
   const roleWindow = document.querySelector(".js-roles");
   const titleList = document.querySelector(".js-project-title-list-container");
   const roleList = document.querySelector(".js-project-role-list-container");
@@ -85,7 +86,7 @@
     const activeWidth = isDesktop() ? col * 6 + 10 * 5 : col * 4 + 10 * 3;
     const inactiveWidth = isFilm ? activeWidth : col;
     const itemHeight = isDesktop() ? window.innerHeight * 0.62 : Math.min(activeWidth * 1.09, window.innerHeight - 176);
-    const visibleRange = isFilm ? 2.35 : 4.65;
+    const visibleRange = isFilm ? 2.35 : 3.65;
 
     metricsCache = {
       activeWidth,
@@ -114,11 +115,14 @@
   }
 
   function markMoving() {
-    body.classList.add("is-moving");
+    if (!body.classList.contains("is-moving")) {
+      body.classList.add("is-moving");
+    }
+
     window.clearTimeout(movingTimer);
     movingTimer = window.setTimeout(() => {
       body.classList.remove("is-moving");
-    }, 180);
+    }, 220);
   }
 
   function setCachedStyle(entry, target, property, value) {
@@ -271,6 +275,13 @@
       return;
     }
 
+    if (!projectHud || window.getComputedStyle(projectHud).display === "none") {
+      detailTweenValue = index;
+      counterTweenValue = index;
+      updateProjectListSelection();
+      return;
+    }
+
     const total = projects.length;
     let titleTarget = index;
     let counterTarget = index;
@@ -351,7 +362,7 @@
 
     const metrics = layoutMetrics();
     const total = items.length;
-    const nextActive = wrap(Math.round(-targetX), total);
+    const nextActive = wrap(Math.round(-currentX), total);
 
     if (nextActive !== activeIndex) {
       activeIndex = nextActive;
@@ -364,6 +375,8 @@
       const abs = Math.abs(position);
       const sign = Math.sign(position);
       const isActive = index === activeIndex;
+      const visible = abs < metrics.visibleRange;
+      const wasVisible = entry.visible;
       const width = isFilm
         ? metrics.activeWidth
         : isActive
@@ -374,7 +387,6 @@
         : metrics.inactiveWidth + metrics.gap;
       const sidePush = isFilm ? 0 : sign * ((metrics.activeWidth - metrics.inactiveWidth) / 2) * clamp(abs, 0, 1);
       const x = position * spacing + sidePush;
-      const visible = abs < metrics.visibleRange;
       const opacity = visible ? (isFilm ? (abs < 2.05 ? 1 : 0.12) : 1) : 0;
       const scale = isFilm && !isActive ? 0.94 : 1;
       const itemTransform = `translate3d(calc(-50% + ${x.toFixed(3)}px), -50%, 0) scale(${scale})`;
@@ -383,7 +395,6 @@
       const imageTransform = `translate3d(${imageShift.toFixed(3)}%, 0, 0) scale(${imageScale})`;
 
       entry.position = position;
-      entry.item.dataset.position = String(position);
 
       if (entry.active !== isActive) {
         entry.active = isActive;
@@ -396,6 +407,13 @@
         entry.item.classList.toggle("is-visible", visible);
       }
 
+      if (!visible && !wasVisible) {
+        setCachedStyle(entry, "item", "opacity", "0");
+        setCachedStyle(entry, "item", "pointerEvents", "none");
+        return;
+      }
+
+      entry.item.dataset.position = String(position);
       setCachedStyle(entry, "item", "width", `${width.toFixed(3)}px`);
       setCachedStyle(entry, "item", "height", `${metrics.itemHeight.toFixed(3)}px`);
       setCachedStyle(entry, "item", "opacity", String(opacity));
@@ -410,7 +428,8 @@
   }
 
   function tickWork() {
-    currentX += (targetX - currentX) * (reduceMotion ? 1 : 0.14);
+    const ease = workList?.classList.contains("is-dragging") ? 0.2 : 0.16;
+    currentX += (targetX - currentX) * (reduceMotion ? 1 : ease);
 
     if (Math.abs(targetX - currentX) < 0.0008) {
       currentX = targetX;
@@ -464,8 +483,8 @@
         }
 
         event.preventDefault();
-        const divider = 200 + (isFilm ? 500 : 0);
-        const delta = clamp((-event.deltaY - event.deltaX) / divider, -0.22, 0.22);
+        const divider = 380 + (isFilm ? 520 : 0);
+        const delta = clamp((-event.deltaY - event.deltaX) / divider, -0.14, 0.14);
 
         if (delta) {
           targetX += delta;
@@ -492,7 +511,7 @@
 
       const deltaX = event.clientX - dragStart.x;
       const deltaY = event.clientY - dragStart.y;
-      targetX = dragTargetStart + (deltaX + (isDesktop() ? 0 : deltaY)) / (100 + (isFilm ? 300 : 0));
+      targetX = dragTargetStart + (deltaX + (isDesktop() ? 0 : deltaY)) / (145 + (isFilm ? 360 : 0));
       needsRender = true;
       markMoving();
     });
