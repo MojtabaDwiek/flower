@@ -69,7 +69,18 @@
   const wrap = (index, length) => ((index % length) + length) % length;
   const isDesktop = () => window.innerWidth >= 1000;
 
-  const projects = caseNodes.map((node, index) => ({
+  function shuffle(items) {
+    const result = items.slice();
+
+    for (let index = result.length - 1; index > 0; index -= 1) {
+      const swapIndex = Math.floor(Math.random() * (index + 1));
+      [result[index], result[swapIndex]] = [result[swapIndex], result[index]];
+    }
+
+    return result;
+  }
+
+  const projects = shuffle(caseNodes).map((node, index) => ({
     index,
     title: node.dataset.title || `Project ${index + 1}`,
     year: node.dataset.year || "2026",
@@ -540,8 +551,10 @@
         }
 
         event.preventDefault();
-        const divider = 380 + (isFilm ? 520 : 0);
-        const delta = clamp((-event.deltaY - event.deltaX) / divider, -0.14, 0.14);
+        const isMobileView = !isDesktop();
+        const divider = isMobileView ? 320 : 380 + (isFilm ? 520 : 0);
+        const limit = isMobileView ? 0.32 : 0.14;
+        const delta = clamp((-event.deltaY - event.deltaX) / divider, -limit, limit);
 
         if (delta) {
           targetX += delta;
@@ -570,11 +583,13 @@
 
       const deltaX = event.clientX - dragStart.x;
       const deltaY = event.clientY - dragStart.y;
+      const isMobileView = !isDesktop();
       if (Math.hypot(deltaX, deltaY) > 6) {
         dragMoved = true;
       }
 
-      targetX = dragTargetStart + (deltaX + (isDesktop() ? 0 : deltaY)) / (145 + (isFilm ? 360 : 0));
+      const dragDivider = isMobileView ? 210 : 145 + (isFilm ? 360 : 0);
+      targetX = dragTargetStart + (deltaX + (isMobileView ? deltaY : 0)) / dragDivider;
       needsRender = true;
       markMoving();
     });
